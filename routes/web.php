@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Middleware\RedirectAdmin;
@@ -47,5 +48,12 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(func
     Route::delete('/products/destroy/{id}',[ProductController::class,'destroy'])->name('admin.products.destroy');
 });
 //end
+
+Route::prefix('cart')->controller(CartController::class)->group(function () {
+    Route::get('view', 'view')->name('cart.view');
+    Route::post('store/{product}', 'store')->name('cart.store');
+    Route::patch('update/{product}', 'update')->name('cart.update');
+    Route::delete('delete/{product}', 'delete')->name('cart.delete');
+});
 
 require __DIR__ . '/auth.php';
