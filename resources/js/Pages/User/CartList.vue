@@ -2,11 +2,23 @@
 import { computed } from 'vue'
 
 import UserLayout from './Layouts/UserLayout.vue';
-import { usePage } from '@inertiajs/vue3';
+import { router, usePage } from '@inertiajs/vue3';
 
+const carts = computed(() => usePage().props.cart.data.items)
 const products = computed(() => usePage().props.cart.data.products);
 const total = computed(() => usePage().props.cart.data.total)
 
+const itemId = (id) => carts.value.findIndex((item) => item.product_id === id)
+
+const update = (product, quantity) => {
+    router.patch(route('cart.update', product), {
+        quantity,
+    })
+}
+
+const remove = (product) => {
+    router.delete(route('cart.delete', product));
+}
 </script>
 <template>
     <UserLayout>
@@ -50,8 +62,9 @@ const total = computed(() => usePage().props.cart.data.total)
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
-                                        <button
-                                            class="inline-flex items-center justify-center p-1 me-3 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                                        <button @click.prevent="update(product, carts[itemId(product.id)].quantity - 1)"
+                                            :disabled="carts[itemId(product.id)].quantity <= 1"
+                                            :class="[carts[itemId(product.id)].quantity > 1 ? 'cursor-pointer text-purple-600' : 'cursor-not-allowed text-gray-300 dark:text-gray-500', 'inline-flex items-center justify-center p-1 text-sm font-medium h-6 w-6 text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700']"
                                             type="button">
                                             <span class="sr-only">Quantity button</span>
                                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
@@ -62,10 +75,11 @@ const total = computed(() => usePage().props.cart.data.total)
                                         </button>
                                         <div>
                                             <input type="number" id="first_product"
+                                                v-model="carts[itemId(product.id)].quantity"
                                                 class="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                                 placeholder="1" required />
                                         </div>
-                                        <button
+                                        <button @click.prevent="update(product, carts[itemId(product.id)].quantity + 1)"
                                             class="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
                                             type="button">
                                             <span class="sr-only">Quantity button</span>
@@ -82,6 +96,7 @@ const total = computed(() => usePage().props.cart.data.total)
                                 </td>
                                 <td class="px-6 py-4">
                                     <a href="#"
+                                        @click="remove(product)"
                                         class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
                                 </td>
                             </tr>
@@ -92,7 +107,7 @@ const total = computed(() => usePage().props.cart.data.total)
 
                 <div class="lg:w-1/3 md:w-1/2 bg-white flex flex-col md:ml-auto w-full md:py-8 mt-8 md:mt-0">
                     <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Summary</h2>
-                    <p class="leading-relaxed mb-5 text-gray-600">Total: $120</p>
+                    <p class="leading-relaxed mb-5 text-gray-600">Total: ${{total}}</p>
                     <h2 class="text-gray-900 text-lg mb-1 font-medium title-font">Shipping <address></address>
                     </h2>
                     <p class="leading-relaxed mb-5 text-gray-600">Test</p>
