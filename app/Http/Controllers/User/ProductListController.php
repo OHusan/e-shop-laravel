@@ -23,10 +23,20 @@ class ProductListController extends Controller
         return Inertia::render(
             'User/ProductList',
             [
-                'categories'=>$categories,
-                'brands'=>$brands,
+                'categories' => $categories,
+                'brands' => $brands,
                 'products' => ProductResource::collection($filterProducts)
             ]
         );
+    }
+
+    public function filter(Request $request)
+    {
+
+        $query = $request->input('query');
+
+        $titles = Product::where('title', 'LIKE', '%' . $query . '%')->get();
+
+        return response()->json($titles);
     }
 }
