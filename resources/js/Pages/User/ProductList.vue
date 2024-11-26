@@ -47,6 +47,7 @@ const priceFilter = () => {
 }
 
 const mobileFiltersOpen = ref(false)
+const searchQuery = ref('');
 
 const props = defineProps({
     products: Array,
@@ -75,17 +76,8 @@ function updateFilteredProducts() {
     })
 }
 
-const filterTitle = async (e) => {
-    console.log(e.target.value)
-    try{
-        const response = await router.get('products/titles', {
-            params: { query: e.target.value}
-        });
-        // const res = response.data;
-        console.log(response)
-    }catch (err) {
-        console.log(err)
-    }
+const filterTitle = async () => {
+    console.log(searchQuery.value);
 }
 
 </script>
@@ -199,10 +191,18 @@ const filterTitle = async (e) => {
                                 </transition>
                             </Menu>
 
-                            <button type="button" class="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7">
+                            <!-- Grid layout -->
+                            <button type="button" class="-m-2 ml-5 p-2 text-gray-400 hover:text-gray-500 sm:ml-7 flex">
                                 <span class="sr-only">View grid</span>
                                 <Squares2X2Icon class="h-5 w-5" aria-hidden="true" />
+
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                    stroke-width="1.5" stroke="currentColor" class="size-5 hidden">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
+                                </svg>
                             </button>
+
                             <button type="button"
                                 class="-m-2 ml-4 p-2 text-gray-400 hover:text-gray-500 sm:ml-6 lg:hidden"
                                 @click="mobileFiltersOpen = true">
@@ -302,10 +302,11 @@ const filterTitle = async (e) => {
                                     <!-- end -->
                                 </form>
 
-                                <form>
+                                <form @submit.prevent="filterTitle">
                                     <label for="filter_title">Filter by title</label>
                                     <input id="filter_title" type="text" class="rounded border-black/20"
-                                        @input="filterTitle" />
+                                        v-model="searchQuery">
+                                    <button class="ml-2 border p-2 rounded-xl">Filter</button>
                                 </form>
 
                             </div>

@@ -23,6 +23,7 @@
         "element-plus": "^2.3.12",
         "flowbite": "^1.8.1",
         "sweetalert2": "^11.7.27",
+        "swiper": "^11.1.15",
         "vue-sweetalert2": "^5.0.5"
     }
 }
