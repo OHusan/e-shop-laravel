@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Response;
 
 class ProductListController extends Controller
 {
@@ -32,11 +33,14 @@ class ProductListController extends Controller
 
     public function filter(Request $request)
     {
+        $title = $request->get('title', []);
+        $query = Product::where('title', 'LIKE', '%' . $title . '%')->get();
 
-        $query = $request->input('query');
+        return response()->json($query);
+    }
 
-        $titles = Product::where('title', 'LIKE', '%' . $query . '%')->get();
-
-        return response()->json($titles);
+    public function getRouteInfo() {
+        dd('test');
+        return response()->json(\App\Helper\Cart::getCurrentRouteInfo());
     }
 }

@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Route;
 
 class Cart
 {
@@ -97,5 +98,16 @@ class Cart
         $products = Product::whereIn('id', $ids)->with('product_images')->get();
         $cartItems = Arr::keyBy($cartItems, 'product_id');
         return [$products, $cartItems];
+    }
+
+    public static function getCurrentRouteInfo() {
+        $route = Route::current();
+
+
+        dd($route);
+        return [
+            'name' => $route ? $route->getName() : null,
+            'uri' => $route ? $route->uri() : null,
+        ];
     }
 }
