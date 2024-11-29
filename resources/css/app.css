@@ -1,3 +1,56 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.slider {
+    @apply p-8 text-white overflow-hidden;
+}
+
+.slider .swiper-container {
+    @apply w-full h-full;
+}
+
+.slider__flex {
+    @apply flex items-start;
+}
+
+.slider__col {
+    @apply flex flex-col w-[150px] mr-8;
+}
+
+.slider__prev,
+.slider__next {
+    @apply cursor-pointer text-sm h-12 flex items-center justify-center select-none focus:outline-none;
+}
+
+.slider__thumbs {
+    @apply h-[calc(400px-96px)];
+}
+
+.slider__thumbs .slider__image {
+    @apply duration-[0.25s] grayscale opacity-50 hover:opacity-100;
+}
+
+.slider__thumbs .swiper-slide-thumb-active .slider__image {
+    @apply grayscale opacity-100;
+}
+
+.slider__images {
+    @apply h-[400px];
+}
+
+.slider__images .slider__image img {
+    @apply duration-[3s];
+}
+
+.slider__images .slider__image:hover img {
+    @apply scale-110;
+}
+
+.slider__image {
+    @apply w-full h-full rounded-[3px] overflow-hidden;
+}
+
+.slider__image img {
+    @apply block w-full h-full object-cover;
+}

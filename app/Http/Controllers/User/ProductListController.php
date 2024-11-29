@@ -39,8 +39,9 @@ class ProductListController extends Controller
         return response()->json($query);
     }
 
-    public function getRouteInfo() {
-        dd('test');
-        return response()->json(\App\Helper\Cart::getCurrentRouteInfo());
+    public function detail (Product $product) {
+        return Inertia::render('User/ProductDetail', [
+            'product' => $product
+        ]);
     }
 }

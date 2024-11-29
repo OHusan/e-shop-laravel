@@ -59,6 +59,7 @@ Route::prefix('cart')->controller(CartController::class)->group(function () {
 
 Route::prefix('products')->controller(ProductListController::class)->group(function () {
     Route::get('/', 'index')->name('products.index');
+    Route::get('/{product:slug}', 'detail')->name('products.detail');
     Route::post('/titles', 'filter')->name('products.titles');
 });
 

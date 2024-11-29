@@ -3,7 +3,9 @@
 namespace App\Http\Middleware;
 
 use App\Helper\Cart;
+use App\Http\Controllers\User\ProductListController;
 use App\Http\Resources\CartResource;
+use App\Http\Resources\ProductImageResource;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Inertia\Middleware;

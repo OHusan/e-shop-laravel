@@ -54,7 +54,7 @@ const priceFilter = () => {
 const mobileFiltersOpen = ref(false)
 
 const props = defineProps({
-    products: Array,
+    products: Object,
     brands: Array,
     categories: Array
 })

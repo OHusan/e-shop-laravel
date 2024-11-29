@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import InfoCardIcons from './InfoCardIcons.vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps<{
     product: any;
@@ -8,10 +9,11 @@ const props = defineProps<{
 }>();
 
 const checkLayout = computed(() => props.layout === 'horizontal');
+console.log(props.product, 'testonja--------')
 </script>
 
 <template>
-    <div :class="`group [box-shadow:rgba(0,0,0,0.05)_0px_1px_2px_0px] ${checkLayout ? 'flex gap-4' : ''}`">
+    <Link :href="route('products.detail', product)" :class="`group [box-shadow:rgba(0,0,0,0.05)_0px_1px_2px_0px] ${checkLayout ? 'flex gap-4' : ''}`">
         <div class="relative">
             <img v-if="product.product_images.length > 0" :src="`/${product.product_images[0].image}`"
                 :alt="product.description" class="h-full w-full object-cover object-center lg:h-full lg:w-full" />
@@ -31,5 +33,5 @@ const checkLayout = computed(() => props.layout === 'horizontal');
             <p class="text-sm mt-3">${{ product.price }}</p>
             <InfoCardIcons v-if="checkLayout"/>
         </div>
-    </div>
+    </Link>
 </template>

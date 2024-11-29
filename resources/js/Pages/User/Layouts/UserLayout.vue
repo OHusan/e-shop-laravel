@@ -1,7 +1,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import { initFlowbite } from 'flowbite'
-import Header from './Header.vue'
+import HeaderV2 from './Header-v2.vue';
 import Footer from './Footer.vue'
 import PageTitle from '@/Components/PageTitle.vue';
 
@@ -11,7 +11,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <Header />
+    <HeaderV2 />
     <PageTitle />
 
     <slot />
