@@ -40,8 +40,11 @@ class ProductListController extends Controller
     }
 
     public function detail (Product $product) {
+
+        $productRender = Product::with('category')->find($product->category_id);
+
         return Inertia::render('User/ProductDetail', [
-            'product' => $product
+            'product' => $productRender
         ]);
     }
 }

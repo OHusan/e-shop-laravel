@@ -54,3 +54,21 @@
 .slider__image img {
     @apply block w-full h-full object-cover;
 }
+
+@layer base {
+    .product-link {
+        @apply inline-block relative;
+    }
+
+    .product-link:after {
+        @apply bg-[none_repeat_scroll_0_0_transparent] bottom-0 content-[''] block h-0.5 left-1/2 absolute bg-indigo-900 w-0 [transition:_width_0.3s_ease_0s,_left_0.3s_ease_0s];
+    }
+
+    .product-link:hover:after {
+        @apply w-full left-0;
+    }
+
+    .product-link-active:after {
+        @apply w-full left-0 bg-indigo-900;
+    }
+}

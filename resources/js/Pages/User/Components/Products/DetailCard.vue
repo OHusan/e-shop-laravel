@@ -23,7 +23,7 @@ const props = defineProps({
 
             <button>Add to cart</button>
 
-            <p>Category</p>
+            <p>Category: {{ product.category.name }}</p>
             <p>Tags</p>
             <p>Share</p>
         </div>
