@@ -16,5 +16,6 @@ onMounted(() => {
 
     <slot />
 
+    <div class="mb-20"/>
     <Footer />
 </template>

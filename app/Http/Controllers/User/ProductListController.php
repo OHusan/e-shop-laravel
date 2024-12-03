@@ -39,12 +39,18 @@ class ProductListController extends Controller
         return response()->json($query);
     }
 
-    public function detail (Product $product) {
-
-        $productRender = Product::with('category')->find($product->category_id);
+    public function detail(Product $product)
+    {
+        $productRender = Product::with('category', 'product_images')->find($product->id);
+        $similarProducts = Product::with('category', 'product_images')
+            ->where('category_id',  $productRender->category_id)
+            ->where('id', '!=', $productRender->id)
+            ->take(4)
+            ->get();
 
         return Inertia::render('User/ProductDetail', [
-            'product' => $productRender
+            'product' => $productRender,
+            'similarProducts' => $similarProducts
         ]);
     }
 }

@@ -2,7 +2,6 @@
 const props = defineProps({
     products: Array
 })
-console.log(props.products)
 import { onMounted } from 'vue';
 import ProductCard from './ProductCard.vue';
 

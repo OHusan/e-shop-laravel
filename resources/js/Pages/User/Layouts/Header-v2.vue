@@ -46,7 +46,7 @@ import { Link } from '@inertiajs/vue3';
             <Link :href="route('home')">Products</Link>
             <Link :href="route('home')">Blog</Link>
             <Link :href="route('home')">Shop</Link>
-            <Link :href="route('home')">Contact</Link>
+            <Link :href="route('contact-us')">Contact</Link>
         </div>
 
         <div class="relative">
