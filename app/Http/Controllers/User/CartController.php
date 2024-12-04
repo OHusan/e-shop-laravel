@@ -5,11 +5,14 @@ namespace App\Http\Controllers\User;
 use App\Helper\Cart;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
+use App\Mail\CartMail;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
+use function Termwind\render;
 
 class CartController extends Controller
 {
@@ -121,5 +124,27 @@ class CartController extends Controller
                 return redirect()->back()->with('success', 'item removed successfully');
             }
         }
+    }
+
+    public function cartMail(Request $request)
+    {
+        $name = $request->name;
+        // $cart = $request->cart;
+        $cart = json_decode($request->input('cart'));
+
+        $products = [];
+
+        foreach ($cart as $i => &$item) {
+            $arr = Product::where('id', $item->product_id)->get();
+
+            if ($arr->isNotEmpty()) {
+                $products[] = $arr->first();
+            }
+        }
+
+        return view('mail.cart-email', compact('name', 'cart', 'products'));
+        // dd($cart);
+
+        // Mail::to('test@test.com')->send(new CartMail($name, $cart));
     }
 }

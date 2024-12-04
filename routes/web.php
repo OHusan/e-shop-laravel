@@ -18,7 +18,8 @@ use Inertia\Inertia;
 //user routes
 
 Route::get('/', [UserController::class,'index'])->name('home');
-Route::get('/contact-us', [BaseController::class, 'index'])->name('contact-us');
+Route::get('/contact-us', [BaseController::class, 'contactUs'])->name('contact-us');
+Route::post('/send-mail', [BaseController::class, 'sendMail'])->name('send-mail');
 Route::get('/about-us', [BaseController::class, 'aboutUs'])->name('about-us');
 
 Route::get('/dashboard', function () {
@@ -52,6 +53,7 @@ Route::middleware(['auth', AdminMiddleware::class])->prefix('admin')->group(func
 });
 //end
 
+//CART
 Route::prefix('cart')->controller(CartController::class)->group(function () {
     Route::get('view', 'view')->name('cart.view');
     Route::post('store/{product}', 'store')->name('cart.store');
@@ -59,6 +61,11 @@ Route::prefix('cart')->controller(CartController::class)->group(function () {
     Route::delete('delete/{product}', 'delete')->name('cart.delete');
 });
 
+Route::post('/cart-mail', [CartController::class, 'cartMail'])->name('cart.mail');
+
+//end
+
+//PRODUCTS
 Route::prefix('products')->controller(ProductListController::class)->group(function () {
     Route::get('/', 'index')->name('products.index');
     Route::get('/{product:slug}', 'detail')->name('products.detail');
