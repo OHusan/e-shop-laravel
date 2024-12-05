@@ -16,7 +16,7 @@ class CartMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct(private $name, private $cart)
+    public function __construct(private $name, private $cart, private $products, private $total, private $address)
     {
         //
     }
@@ -38,7 +38,7 @@ class CartMail extends Mailable
     {
         return new Content(
             view: 'mail.cart-email',
-            with: ['name' => $this->name, 'cart' => $this->cart]
+            with: ['name' => $this->name, 'cart' => $this->cart, 'products' => $this->products, 'total' => $this->total, 'address' => $this->address]
         );
     }
 

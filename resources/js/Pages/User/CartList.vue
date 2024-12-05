@@ -4,11 +4,16 @@ import { computed, ref } from 'vue'
 import UserLayout from './Layouts/UserLayout.vue';
 import { router, usePage } from '@inertiajs/vue3';
 import Swal from 'sweetalert2';
+import OrderList from './Components/OrderList.vue';
 
 const cart = computed(() => usePage().props.cart.data.items)
 const products = computed(() => usePage().props.cart.data.products);
 const total = computed(() => usePage().props.cart.data.total)
 const user = computed(() => usePage().props.auth.user)
+
+const props = defineProps({
+    order: Array
+})
 
 const name = ref(user.value.name ?? '');
 const email = ref(user.value.email ?? '');
@@ -25,15 +30,13 @@ const remove = (product) => {
     router.delete(route('cart.delete', product));
 }
 
-console.log(cart.value);
-console.log(products.value);
-
 const sendMail = async () => {
     const formData = new FormData();
 
     formData.append('name', name.value);
     formData.append('email', email.value);
     formData.append('cart', JSON.stringify(cart.value))
+    formData.append('total', total.value);
 
     try {
         await router.post(route('cart.mail'), formData), {}, {
@@ -57,9 +60,10 @@ const sendMail = async () => {
 </script>
 <template>
     <UserLayout>
-        <section class="text-gray-600 body-font relative">
-            <div class="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap gap-10">
+        <OrderList :order="order"/>
 
+        <section v-if="cart.length > 0" class="text-gray-600 body-font relative">
+            <div class="container px-5 py-24 mx-auto flex sm:flex-nowrap flex-wrap gap-10">
 
                 <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                     <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">

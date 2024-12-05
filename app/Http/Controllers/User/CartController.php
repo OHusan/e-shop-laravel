@@ -7,12 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CartResource;
 use App\Mail\CartMail;
 use App\Models\CartItem;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\UserAddress;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
-use function Termwind\render;
 
 class CartController extends Controller
 {
@@ -22,17 +24,19 @@ class CartController extends Controller
         if ($user) {
             $cartItems = CartItem::where('user_id', $user->id)->get();
             $userAddress = UserAddress::where('user_id', $user->id)->where('isMain', 1)->first();
+            $order = Order::with('user_address')->where('user_address_id', $userAddress->id)->get();
 
             if ($cartItems->count() > 0) {
                 return Inertia::render('User/CartList', [
                     'cartItems' => $cartItems,
                     'userAddress' => $userAddress,
+                    'order' => $order
                 ]);
             } else {
                 $cartItems = Cart::getCookieCartItems();
-                if (count($cartItems) > 0) {
+                if (count($cartItems) >= 0) {
                     $cartItems = new CartResource(Cart::getProductsAndCartItems());
-                    return Inertia::render('User/CartList', ['cartItems' => $cartItems]);
+                    return Inertia::render('User/CartList', ['cartItems' => $cartItems, 'order' => $order]);
                 } else {
                     return redirect()->back();
                 }
@@ -129,8 +133,9 @@ class CartController extends Controller
     public function cartMail(Request $request)
     {
         $name = $request->name;
-        // $cart = $request->cart;
+        $total = $request->total;
         $cart = json_decode($request->input('cart'));
+        $address = UserAddress::with('user')->where('user_id', Auth::user()->id)->first();
 
         $products = [];
 
@@ -142,9 +147,34 @@ class CartController extends Controller
             }
         }
 
-        return view('mail.cart-email', compact('name', 'cart', 'products'));
-        // dd($cart);
+        if (count($cart) >= 1) {
+            $order = Order::create([
+                'total_price' => $total,
+                'status' => 'pending',
+                'session_id' => '1',
+                'user_address_id' => $address->id,
+                'created_by' => $name
+            ]);
 
-        // Mail::to('test@test.com')->send(new CartMail($name, $cart));
+            foreach($products as $product){
+                $productId = $product->id;
+
+                $filteredItem = array_filter($cart, function($item) use ($productId) {
+                    return $item->product_id == $productId;
+                });
+                $quantity = !empty($filteredItem) ? reset($filteredItem)->quantity : null;
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $product->id,
+                    'quantity' => $quantity,
+                    'unit_price' => 'USD'
+                ]);
+            }
+
+            CartItem::where('user_id', Auth::user()->id)->truncate();
+        }
+
+        Mail::to('test@test.com')->send(new CartMail($name, $cart, $products, $total, $address));
     }
 }
