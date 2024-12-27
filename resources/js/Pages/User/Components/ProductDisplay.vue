@@ -34,6 +34,7 @@ const addToCart = (product) => {
                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/No-Image-Placeholder.svg/330px-No-Image-Placeholder.svg.png"
                     :alt="product.imageAlt" class="h-full w-full object-cover object-center lg:h-full lg:w-full" />
 
+                <h1>HELLO WORLD</h1>
                 <!-- add to cart icon -->
                 <div
                     class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 cursor-pointer ">
