@@ -1,6 +1,11 @@
 name: GitHub Actions Demo
 run-name: ${{ github.actor }} is testing out GitHub Actions 🚀
-on: [push]
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow on push to the 'main' branch
+
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
@@ -8,11 +13,37 @@ jobs:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+
+      # Checkout code
       - name: Check out repository code
         uses: actions/checkout@v4
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+
+      # Capture commit messages and determine the type of change
+      - name: Get the latest commit messages
+        id: commit_messages
+        run: |
+          echo "COMMIT_MSG=$(git log -1 --pretty=%B)" >> $GITHUB_ENV
+
+      # Conditional steps based on commit message
+      - name: Run front-end tasks
+        if: contains(env.COMMIT_MSG, 'add(front)') || contains(env.COMMIT_MSG, 'fix(front)') || contains(env.COMMIT_MSG, 'update(front)')
+        run: echo "🚀 Front-end changes detected, running front-end tasks..."
+
+      - name: Run back-end tasks
+        if: contains(env.COMMIT_MSG, 'add(back)') || contains(env.COMMIT_MSG, 'fix(back)') || contains(env.COMMIT_MSG, 'update(back)')
+        run: echo "🚀 Back-end changes detected, running back-end tasks..."
+
+      - name: Run delete tasks
+        if: contains(env.COMMIT_MSG, 'delete')
+        run: echo "🧹 Deletion detected, cleaning up..."
+
+      - name: Run general update tasks
+        if: contains(env.COMMIT_MSG, 'update') && !contains(env.COMMIT_MSG, 'front') && !contains(env.COMMIT_MSG, 'back')
+        run: echo "⚡ General update detected, running update tasks..."
+
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+
       - run: echo "🍏 This job's status is ${{ job.status }}."
